@@ -78,7 +78,9 @@ let currentWeights = CRITERIA.map(c => c.weight);
 let scores = {}; // e.g. { 'P1_C1': 8, 'P1_C2': 7, ... }
 
 // Google Apps Script Web App URL
-let SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPRBV1quzSG8ZDKqTBGX-0jlIeaQ02YAxIvtoefSZ-kUGFkrwFOUZgKEJLrcX2-WKk7A/exec';
+const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPRBV1quzSG8ZDKqTBGX-0jlIeaQ02YAxIvtoefSZ-kUGFkrwFOUZgKEJLrcX2-WKk7A/exec';
+let SCRIPT_URL = DEFAULT_SCRIPT_URL;
+console.log('MCA App v1.1.3 initialized');
 
 // ---------- INIT ----------
 document.addEventListener('DOMContentLoaded', () => {
@@ -99,9 +101,9 @@ function setDefaultDate() {
 }
 
 function loadSavedConfig() {
+    // We no longer overwrite SCRIPT_URL from localStorage to prevent corruption
     const saved = localStorage.getItem('mca_script_url');
     if (saved) {
-        SCRIPT_URL = saved;
         const urlInput = document.getElementById('scriptUrl');
         if (urlInput) urlInput.value = saved;
     }
@@ -406,13 +408,20 @@ async function submitForm() {
     // Check Google Apps Script URL
     const urlInput = document.getElementById('scriptUrl');
     const inputUrl = urlInput ? urlInput.value.trim() : '';
+
+    // Force use DEFAULT if everything is empty
     if (inputUrl) {
         SCRIPT_URL = inputUrl;
+    } else if (!SCRIPT_URL) {
+        SCRIPT_URL = DEFAULT_SCRIPT_URL;
     }
 
     if (!SCRIPT_URL) {
-        showToast('กรุณาใส่ Google Apps Script URL ก่อน', 'error');
-        document.getElementById('scriptUrl')?.focus();
+        showToast('กรุณาใส่ Google Apps Script URL ก่อน (v1.1.3)', 'error');
+        if (urlInput) {
+            urlInput.parentElement.style.display = 'block'; // Show it if it was hidden and empty
+            urlInput.focus();
+        }
         return;
     }
 
