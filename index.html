@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCA Expert Scoring — การประเมินนโยบายลดคาร์บอนภาคขนส่ง</title>
+    <meta name="description"
+        content="แบบประเมิน Multi-Criteria Analysis สำหรับผู้เชี่ยวชาญ เพื่อประเมินนโยบายการลดคาร์บอนในภาคขนส่งของประเทศไทย">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- ===== HEADER ===== -->
+        <header class="app-header">
+            <span class="logo-icon">📊</span>
+            <h1>MCA Expert Scoring System</h1>
+            <p class="subtitle">แบบประเมินนโยบายการลดคาร์บอนภาคขนส่ง — Multi-Criteria Analysis</p>
+        </header>
+
+        <!-- ===== SECTION 1: Expert Info ===== -->
+        <section class="section-card" id="expertSection">
+            <h2 class="section-title">
+                <span class="icon">👤</span>
+                ข้อมูลผู้เชี่ยวชาญ (Expert Information)
+            </h2>
+            <div class="expert-form">
+                <div class="form-group">
+                    <label for="expertName">ชื่อ-นามสกุล</label>
+                    <input type="text" id="expertName" placeholder="กรุณากรอกชื่อ-นามสกุล">
+                </div>
+                <div class="form-group">
+                    <label for="expertOrg">สังกัด / หน่วยงาน</label>
+                    <input type="text" id="expertOrg" placeholder="กรุณากรอกสังกัดหรือหน่วยงาน">
+                </div>
+                <div class="form-group">
+                    <label for="expertDate">วันที่ประเมิน</label>
+                    <input type="date" id="expertDate">
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECTION 2: Criteria & Weights ===== -->
+        <section class="section-card" id="criteriaSection">
+            <h2 class="section-title">
+                <span class="icon">⚖️</span>
+                เกณฑ์การประเมินและน้ำหนัก (Criteria & Weights)
+            </h2>
+            <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 1rem;">
+                ปรับค่าน้ำหนัก (Weight) ของแต่ละเกณฑ์ได้ตามต้องการ — ผลรวมต้องเท่ากับ 1.000
+            </p>
+            <div class="criteria-table-wrapper">
+                <table class="criteria-table">
+                    <thead>
+                        <tr>
+                            <th>รหัส</th>
+                            <th>น้ำหนัก (0–1)</th>
+                            <th>ชื่อเกณฑ์</th>
+                            <th>คำอธิบาย / แนวทางการให้คะแนน</th>
+                        </tr>
+                    </thead>
+                    <tbody id="criteriaBody">
+                        <!-- Rendered by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="weight-summary">
+                <span class="weight-total-label">ผลรวมน้ำหนัก</span>
+                <div class="weight-progress">
+                    <div class="weight-progress-bar" id="weightProgressBar" style="width: 100%"></div>
+                </div>
+                <span class="weight-total-value valid" id="weightTotalValue">1.000</span>
+            </div>
+        </section>
+
+        <!-- ===== SECTION 3: Policy Scoring ===== -->
+        <section class="section-card" id="scoringSection">
+            <h2 class="section-title">
+                <span class="icon">📝</span>
+                การให้คะแนนนโยบาย (Policy Scoring)
+            </h2>
+            <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 1rem;">
+                กรอกคะแนน <strong style="color: var(--accent-primary);">1–10</strong> สำหรับแต่ละนโยบายในแต่ละเกณฑ์
+                (1 = ต่ำสุด, 10 = สูงสุด) — คะแนนถ่วงน้ำหนักจะคำนวณอัตโนมัติ
+            </p>
+            <div class="scoring-table-wrapper">
+                <table class="scoring-table">
+                    <thead>
+                        <tr id="scoringHeader">
+                            <!-- Rendered by JS -->
+                        </tr>
+                    </thead>
+                    <tbody id="scoringBody">
+                        <!-- Rendered by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ===== SECTION 3.5: Radar Charts ===== -->
+        <section class="section-card" id="radarSection">
+            <h2 class="section-title">
+                <span class="icon">🕸️</span>
+                แผนภูมิใยแมงมุม (Radar Chart)
+            </h2>
+            <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.5rem;">
+                แสดงค่าคะแนนใน 6 ด้านของแต่ละนโยบาย — กรอกคะแนนด้านบนแล้วกราฟจะอัปเดตอัตโนมัติ
+            </p>
+            <div class="radar-grid" id="radarGrid">
+                <!-- Rendered by JS -->
+            </div>
+        </section>
+
+        <!-- ===== SECTION 4: Google Sheet Config (hidden - URL hardcoded) ===== -->
+        <section class="section-card" id="configSection" style="display: none;">
+            <h2 class="section-title">
+                <span class="icon">⚙️</span>
+                ตั้งค่าการเชื่อมต่อ Google Sheets
+            </h2>
+            <div class="config-row">
+                <div class="form-group">
+                    <label for="scriptUrl">Google Apps Script Web App URL</label>
+                    <input type="url" id="scriptUrl" placeholder="https://script.google.com/macros/s/xxxxx/exec">
+                    <span class="config-hint">* ดูวิธีสร้างได้ที่ไฟล์ setup-guide.md</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SUBMIT ===== -->
+        <section class="section-card submit-section">
+            <button class="btn-submit" id="submitBtn" onclick="submitForm()">
+                <span class="spinner"></span>
+                <span class="btn-text">📤 ส่งข้อมูลไป Google Sheet</span>
+            </button>
+            <div style="margin-top: 1rem;">
+                <button onclick="resetForm()"
+                    style="background: none; border: 1px solid var(--border-color); color: var(--text-secondary); padding: 0.6rem 1.5rem; border-radius: var(--radius); cursor: pointer; font-family: inherit; font-size: 0.88rem; transition: all 0.2s ease;"
+                    onmouseover="this.style.borderColor='var(--error)'; this.style.color='var(--error)'"
+                    onmouseout="this.style.borderColor='var(--border-color)'; this.style.color='var(--text-secondary)'">
+                    🗑️ ล้างข้อมูลทั้งหมด
+                </button>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
