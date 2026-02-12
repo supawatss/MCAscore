@@ -405,7 +405,10 @@ async function submitForm() {
 
     // Check Google Apps Script URL
     const urlInput = document.getElementById('scriptUrl');
-    SCRIPT_URL = urlInput ? urlInput.value.trim() : SCRIPT_URL;
+    const inputUrl = urlInput ? urlInput.value.trim() : '';
+    if (inputUrl) {
+        SCRIPT_URL = inputUrl;
+    }
 
     if (!SCRIPT_URL) {
         showToast('กรุณาใส่ Google Apps Script URL ก่อน', 'error');
