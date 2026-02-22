@@ -4,10 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MCA Expert Scoring — การประเมินนโยบายลดคาร์บอนภาคขนส่ง</title>
+    <title>Transport Decarbonisation Pathway — MCA Expert Scoring</title>
     <meta name="description"
-        content="แบบประเมิน Multi-Criteria Analysis สำหรับผู้เชี่ยวชาญ เพื่อประเมินนโยบายการลดคาร์บอนในภาคขนส่งของประเทศไทย">
+        content="แบบประเมิน Multi-Criteria Analysis ตามกรอบ Avoid-Shift-Improve สำหรับนโยบายลดคาร์บอนภาคขนส่ง">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -17,12 +19,44 @@
 
         <!-- ===== HEADER ===== -->
         <header class="app-header">
-            <span class="logo-icon">📊</span>
-            <h1>MCA Expert Scoring System</h1>
-            <p class="subtitle">แบบประเมินนโยบายการลดคาร์บอนภาคขนส่ง — Multi-Criteria Analysis</p>
+            <span class="logo-icon">🌿</span>
+            <h1>Transport Decarbonisation Pathway</h1>
+            <p class="subtitle">การประเมินนโยบายลดคาร์บอนภาคขนส่ง ด้วย Multi-Criteria Analysis (MCA) ตามแนวทาง Avoid ·
+                Shift · Improve</p>
         </header>
 
-        <!-- ===== SECTION 1: Expert Info ===== -->
+        <!-- ===== ASI LEGEND ===== -->
+        <section class="section-card" id="asiLegendSection">
+            <h2 class="section-title">
+                <span class="icon">🎯</span>
+                กรอบแนวคิด ASI (Avoid-Shift-Improve)
+            </h2>
+            <div class="asi-legend">
+                <div class="asi-legend-item avoid">
+                    <div class="asi-legend-icon avoid">A</div>
+                    <div class="asi-legend-text">
+                        <h3 class="avoid-text">Avoid — หลีกเลี่ยง</h3>
+                        <p>ลดความจำเป็นในการเดินทางและขนส่ง เช่น ผังเมืองกะทัดรัด การทำงานจากที่บ้าน</p>
+                    </div>
+                </div>
+                <div class="asi-legend-item shift">
+                    <div class="asi-legend-icon shift">S</div>
+                    <div class="asi-legend-text">
+                        <h3 class="shift-text">Shift — เปลี่ยน</h3>
+                        <p>เปลี่ยนรูปแบบการเดินทาง/ขนส่งไปสู่โหมดที่ยั่งยืนกว่า เช่น ขนส่งสาธารณะ ระบบราง</p>
+                    </div>
+                </div>
+                <div class="asi-legend-item improve">
+                    <div class="asi-legend-icon improve">I</div>
+                    <div class="asi-legend-text">
+                        <h3 class="improve-text">Improve — ปรับปรุง</h3>
+                        <p>ปรับปรุงประสิทธิภาพเทคโนโลยีและเชื้อเพลิง เช่น ยานยนต์ไฟฟ้า เชื้อเพลิงชีวภาพ</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== EXPERT INFO ===== -->
         <section class="section-card" id="expertSection">
             <h2 class="section-title">
                 <span class="icon">👤</span>
@@ -44,50 +78,92 @@
             </div>
         </section>
 
-        <!-- ===== SECTION 2: Criteria & Weights ===== -->
+        <!-- ===== CRITERIA & WEIGHTS ===== -->
         <section class="section-card" id="criteriaSection">
             <h2 class="section-title">
                 <span class="icon">⚖️</span>
                 เกณฑ์การประเมินและน้ำหนัก (Criteria & Weights)
             </h2>
-            <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 1rem;">
-                ปรับค่าน้ำหนัก (Weight) ของแต่ละเกณฑ์ได้ตามต้องการ — ผลรวมต้องเท่ากับ 1.000
+            <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 1.25rem;">
+                น้ำหนัก (Weight) ของแต่ละเกณฑ์ถูกกำหนดจากการทบทวนวรรณกรรม — ผลรวมเท่ากับ 1.000
             </p>
-            <div class="criteria-table-wrapper">
-                <table class="criteria-table">
-                    <thead>
-                        <tr>
-                            <th>รหัส</th>
-                            <th>น้ำหนัก (0–1)</th>
-                            <th>ชื่อเกณฑ์</th>
-                            <th>คำอธิบาย / แนวทางการให้คะแนน</th>
-                        </tr>
-                    </thead>
-                    <tbody id="criteriaBody">
-                        <!-- Rendered by JS -->
-                    </tbody>
-                </table>
-            </div>
 
-            <div class="weight-summary">
-                <span class="weight-total-label">ผลรวมน้ำหนัก</span>
-                <div class="weight-progress">
-                    <div class="weight-progress-bar" id="weightProgressBar" style="width: 100%"></div>
+            <div class="criteria-section-layout">
+                <div>
+                    <div class="criteria-table-wrapper">
+                        <table class="criteria-table">
+                            <thead>
+                                <tr>
+                                    <th>รหัส</th>
+                                    <th>น้ำหนัก</th>
+                                    <th>ชื่อเกณฑ์</th>
+                                    <th>คำอธิบาย</th>
+                                    <th>วัตถุประสงค์</th>
+                                </tr>
+                            </thead>
+                            <tbody id="criteriaBody">
+                                <!-- Rendered by JS -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <span class="weight-total-value valid" id="weightTotalValue">1.000</span>
+
+                <!-- Donut Chart -->
+                <div class="weight-chart-card">
+                    <h3>สัดส่วนน้ำหนักเกณฑ์</h3>
+                    <canvas id="weightDonutChart"></canvas>
+                </div>
             </div>
         </section>
 
-        <!-- ===== SECTION 3: Policy Scoring ===== -->
+        <!-- ===== SCORING ===== -->
         <section class="section-card" id="scoringSection">
             <h2 class="section-title">
                 <span class="icon">📝</span>
                 การให้คะแนนนโยบาย (Policy Scoring)
             </h2>
-            <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 1rem;">
-                กรอกคะแนน <strong style="color: var(--accent-primary);">1–10</strong> สำหรับแต่ละนโยบายในแต่ละเกณฑ์
-                (1 = ต่ำสุด, 10 = สูงสุด) — คะแนนถ่วงน้ำหนักจะคำนวณอัตโนมัติ
+            <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 0.75rem;">
+                กรอกคะแนน <strong style="color: var(--accent-primary);">1–5</strong> สำหรับแต่ละนโยบายในแต่ละเกณฑ์
+                — <strong>รวมคะแนนดิบไม่เกิน 30 คะแนนต่อนโยบาย</strong>
             </p>
+            <div class="score-legend">
+                <table class="score-legend-table">
+                    <thead>
+                        <tr>
+                            <th>คะแนน</th>
+                            <th>ระดับ</th>
+                            <th>ความหมาย</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="score-chip sc-1">1</span></td>
+                            <td>ต่ำมาก</td>
+                            <td>แทบไม่มีผลกระทบ / ไม่เป็นไปได้</td>
+                        </tr>
+                        <tr>
+                            <td><span class="score-chip sc-2">2</span></td>
+                            <td>ต่ำ</td>
+                            <td>ผลกระทบน้อย / เป็นไปได้ยาก</td>
+                        </tr>
+                        <tr>
+                            <td><span class="score-chip sc-3">3</span></td>
+                            <td>ปานกลาง</td>
+                            <td>มีผลกระทบพอสมควร / เป็นไปได้ปานกลาง</td>
+                        </tr>
+                        <tr>
+                            <td><span class="score-chip sc-4">4</span></td>
+                            <td>สูง</td>
+                            <td>มีผลกระทบมาก / เป็นไปได้สูง</td>
+                        </tr>
+                        <tr>
+                            <td><span class="score-chip sc-5">5</span></td>
+                            <td>สูงมาก</td>
+                            <td>ผลกระทบอย่างมีนัยสำคัญ / เป็นไปได้อย่างยิ่ง</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <div class="scoring-table-wrapper">
                 <table class="scoring-table">
                     <thead>
@@ -102,13 +178,13 @@
             </div>
         </section>
 
-        <!-- ===== SECTION 3.5: Radar Charts ===== -->
+        <!-- ===== RADAR CHARTS ===== -->
         <section class="section-card" id="radarSection">
             <h2 class="section-title">
                 <span class="icon">🕸️</span>
                 แผนภูมิใยแมงมุม (Radar Chart)
             </h2>
-            <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.5rem;">
+            <p style="color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 1.25rem;">
                 แสดงค่าคะแนนใน 6 ด้านของแต่ละนโยบาย — กรอกคะแนนด้านบนแล้วกราฟจะอัปเดตอัตโนมัติ
             </p>
             <div class="radar-grid" id="radarGrid">
@@ -116,17 +192,44 @@
             </div>
         </section>
 
-        <!-- ===== SECTION 4: Google Sheet Config (hidden - URL hardcoded) ===== -->
-        <section class="section-card" id="configSection" style="display: none;">
+
+
+        <!-- ===== IMPLEMENTATION TIMELINE ===== -->
+        <section class="section-card" id="timelineSection">
             <h2 class="section-title">
-                <span class="icon">⚙️</span>
-                ตั้งค่าการเชื่อมต่อ Google Sheets
+                <span class="icon">🗓️</span>
+                แผนลำดับการดำเนินงาน (Implementation Timeline)
             </h2>
-            <div class="config-row">
-                <div class="form-group">
-                    <label for="scriptUrl">Google Apps Script Web App URL</label>
-                    <input type="url" id="scriptUrl" placeholder="https://script.google.com/macros/s/xxxxx/exec">
-                    <span class="config-hint">* ดูวิธีสร้างได้ที่ไฟล์ setup-guide.md</span>
+            <p style="color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 1.25rem;">
+                นโยบายจะปรากฏในช่วงเวลาที่เลือกจากคอลัมน์ "ลำดับเร่งด่วน" — ขนาดแถบแสดงคะแนนถ่วงน้ำหนักเปรียบเทียบ
+            </p>
+            <div class="timeline-container">
+                <div class="timeline-phase urgent-phase">
+                    <div class="phase-header urgent-header">
+                        <span class="phase-label">เร่งด่วน</span>
+                        <span class="phase-years">2026 – 2030</span>
+                    </div>
+                    <div class="phase-body" id="timelineUrgent">
+                        <div class="phase-empty">ยังไม่มีนโยบาย</div>
+                    </div>
+                </div>
+                <div class="timeline-phase medium-phase">
+                    <div class="phase-header medium-header">
+                        <span class="phase-label">ระยะกลาง</span>
+                        <span class="phase-years">2031 – 2035</span>
+                    </div>
+                    <div class="phase-body" id="timelineMedium">
+                        <div class="phase-empty">ยังไม่มีนโยบาย</div>
+                    </div>
+                </div>
+                <div class="timeline-phase long-phase">
+                    <div class="phase-header long-header">
+                        <span class="phase-label">ระยะยาว</span>
+                        <span class="phase-years">2036 – 2050</span>
+                    </div>
+                    <div class="phase-body" id="timelineLong">
+                        <div class="phase-empty">ยังไม่มีนโยบาย</div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -138,18 +241,15 @@
                 <span class="btn-text">📤 ส่งข้อมูลไป Google Sheet</span>
             </button>
             <div style="margin-top: 1rem;">
-                <button onclick="resetForm()"
-                    style="background: none; border: 1px solid var(--border-color); color: var(--text-secondary); padding: 0.6rem 1.5rem; border-radius: var(--radius); cursor: pointer; font-family: inherit; font-size: 0.88rem; transition: all 0.2s ease;"
-                    onmouseover="this.style.borderColor='var(--error)'; this.style.color='var(--error)'"
-                    onmouseout="this.style.borderColor='var(--border-color)'; this.style.color='var(--text-secondary)'">
+                <button class="btn-secondary" onclick="resetForm()">
                     🗑️ ล้างข้อมูลทั้งหมด
                 </button>
             </div>
         </section>
 
-        <!-- Version Info -->
+        <!-- Version -->
         <div style="text-align: center; color: var(--text-muted); font-size: 0.75rem; margin-top: 3rem; opacity: 0.6;">
-            v1.1.3 (Hardened URL)
+            v2.0.0 — ASI Framework
         </div>
     </div>
 
