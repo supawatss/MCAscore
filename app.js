@@ -156,7 +156,7 @@ let scores = {};
 let priorities = {};
 
 const PRIORITY_OPTIONS = [
-    { key: 'urgent', label: 'ระยะสั้น', labelEn: 'Short-term', color: '#dc2626' },
+    { key: 'short', label: 'ระยะสั้น', labelEn: 'Short-term', color: '#dc2626' },
     { key: 'medium', label: 'ระยะกลาง', labelEn: 'Medium-term', color: '#eab308' },
     { key: 'long', label: 'ระยะยาว', labelEn: 'Long-term', color: '#64748b' },
 ];
@@ -240,11 +240,11 @@ function setPriority(policyCode, priorityKey, btnEl) {
 // ---------- TIMELINE ----------
 function updateTimeline() {
     const containers = {
-        urgent: document.getElementById('timelineUrgent'),
+        short: document.getElementById('timelineUrgent'),
         medium: document.getElementById('timelineMedium'),
         long: document.getElementById('timelineLong'),
     };
-    if (!containers.urgent) return;
+    if (!containers.short) return;
 
     // Compute weighted scores
     const policyScores = {};
@@ -265,7 +265,7 @@ function updateTimeline() {
     if (maxScore === 0) maxScore = 10;
 
     // Group policies by priority
-    const groups = { urgent: [], medium: [], long: [] };
+    const groups = { short: [], medium: [], long: [] };
     POLICIES.forEach(p => {
         const pri = priorities[p.code];
         if (pri && groups[pri]) {
@@ -446,7 +446,7 @@ function renderScoringTable() {
                         <span class="policy-desc-text">${p.nameEn}</span>
                         <button type="button" class="policy-toggle-btn" onclick="togglePolicyDesc('${p.code}')">ดูรายละเอียด ▼</button>
                         <div class="policy-desc-detail" id="desc_${p.code}" style="display:none;">${p.desc.replace(/\n/g, '<br>')}</div>
-                        <div class="raw-score-counter" id="rawSum_${p.code}">เหลือ: 30</div>
+                        <div class="raw-score-counter" id="rawSum_${p.code}">เหลือ: 25</div>
                     </div>
                 </td>
                 ${scoreCells}
@@ -505,9 +505,9 @@ function onScoreChange(policyCode, criteriaCode, criteriaIndex, inputEl) {
         const totalRaw = getPolicyRawSum(policyCode);
         const newTotal = totalRaw - currentScore + val;
 
-        if (newTotal > 30) {
+        if (newTotal > 25) {
             inputEl.classList.add('error');
-            showToast(`คะแนนรวมเกิน 30 (เหลือ: ${30 - (totalRaw - currentScore)})`, 'error');
+            showToast(`คะแนนรวมเกิน 25 (เหลือ: ${25 - (totalRaw - currentScore)})`, 'error');
             inputEl.value = currentScore || ''; // Revert
             return;
         }
@@ -571,10 +571,10 @@ function updateRawScoreCounter(policyCode) {
     const el = document.getElementById(`rawSum_${policyCode}`);
     if (!el) return;
     const sum = getPolicyRawSum(policyCode);
-    const remaining = 30 - sum;
+    const remaining = 25 - sum;
     el.textContent = `เหลือ: ${remaining}`;
-    el.className = `raw-score-counter ${remaining < 3 ? 'low' : ''}`;
-    el.style.color = remaining < 0 ? '#ef4444' : (remaining < 5 ? '#f59e0b' : 'var(--text-secondary)');
+    el.className = `raw-score-counter ${remaining < 2 ? 'low' : ''}`;
+    el.style.color = remaining < 0 ? '#ef4444' : (remaining < 4 ? '#f59e0b' : 'var(--text-secondary)');
 }
 
 function recalcAllScores() {
@@ -781,6 +781,16 @@ async function submitForm() {
 
     if (!SCRIPT_URL) {
         SCRIPT_URL = DEFAULT_SCRIPT_URL;
+    }
+
+    // Validation: Ensure all filled policies have a priority selected
+    for (const p of POLICIES) {
+        const hasScores = CRITERIA.some(c => scores[`${p.code}_${c.code}`] !== undefined);
+        if (hasScores && !priorities[p.code]) {
+            showToast(`กรุณาเลือกระยะเวลาสำหรับนโยบาย ${p.code}`, 'error');
+            document.getElementById(`row_${p.code}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
     }
 
     // Build payload

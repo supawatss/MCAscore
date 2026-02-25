@@ -604,7 +604,7 @@ body::before {
     transform: scale(1.05);
 }
 
-.priority-pill.urgent.selected {
+.priority-pill.short.selected {
     background: rgba(220, 38, 38, 0.15);
     color: #b91c1c;
     border-color: #dc2626;
@@ -864,7 +864,7 @@ body::before {
     font-family: 'Inter', monospace;
 }
 
-.urgent-header {
+.short-header {
     background: rgba(220, 38, 38, 0.1);
     color: #dc2626;
     border-bottom: 2px solid #dc2626;
